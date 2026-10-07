@@ -1,0 +1,22 @@
+Draw the same character again (same as the references at the start of this chat and your previous images).
+MUST KEEP IDENTICAL:
+- near-black dark twintails, shorter and spikier than Choten, with a small red ribbon
+- an X-shaped hairpin, front bangs partly covering one eye
+- muted mauve / dusty purple eyes
+- a black choker with a red heart charm
+- dark charcoal knee-high socks
+- overall dark low-key palette (black, crimson, charcoal)
+- pixel-art style with dithered shading and crisp clean outlines
+
+RENDERING RULES:
+- Do NOT draw a white sticker outline or any white border around the character. Apply a soft drop shadow to the whole silhouette instead. No shadow on the ground.
+- Background: completely flat pure saturated green #00FF00 filling the entire frame. No gradient, no texture, no scenery. It will be chroma-keyed out later.
+
+COMPOSITION:
+- A single character only, full body, standing, facing the viewer. Tall portrait, about 400 wide by 658 tall.
+- Her hair ornaments must end well below the top edge and her shoes must end well above the bottom edge. Nothing may touch or cross any edge of the image.
+
+CHANGE ONLY THIS:
+- Expression and pose: quietly encouraging, small fist raised at chest level, looking away but with a faint smile.
+
+Everything else stays exactly as in the references. Leave the hands empty of props unless the change says otherwise. No text, no watermark.

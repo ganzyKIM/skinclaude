@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>skinclaude overlay</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="mascot" class="mascot form-choten">
+    <div class="mascot-stack">
+      <!-- 말풍선은 말하는 쪽(세션·잡담·지시)마다 하나씩 최대 3개, mascot.js 가 만든다 -->
+      <div id="bubbles" class="bubble-stack"></div>
+      <img id="img" class="mascot-img" src="../assets/char/choten_default.png" alt="초텐쨩" draggable="false">
+    </div>
+
+    <!-- 입력 바: 늘 보인다(사용자 2026-10-07 "채팅을 치는 칸이 좀더 간단하게 항상 보이면"). 포커스 없으면 흐리게, 클릭·⌥⇧Space 로 포커스 -->
+    <div id="panel" class="bar">
+      <button id="mode" class="chip chip-mode" title="잡담/지시 전환 (문장 앞에 > 를 붙이면 그 한 번만 지시)">💬</button>
+      <textarea id="input" rows="1" placeholder="말 걸기…"></textarea>
+      <button id="go" class="mascot-talk go" title="보내기 (Enter)">↵</button>
+      <button id="cancel" class="mascot-talk go cancel" title="취소" hidden>⏹</button>
+    </div>
+    <!-- ⚡ 지시 모드일 때만: 지시 폴더(누르면 선택) -->
+    <div id="bar-foot" class="bar-foot" hidden><button id="pick" class="bar-folder" title="지시를 실행할 폴더 선택"><span id="folder">폴더</span></button></div>
+
+    <div id="log" class="log-panel" hidden>
+      <div class="log-head"><span>최근 대화</span><button id="log-close" class="mascot-quit" title="닫기">×</button></div>
+      <ol id="log-list" class="log-list"></ol>
+    </div>
+
+    <!-- 설정(⚙): 가끔만 만지는 것(renderer/settings.js). 오버레이 끄기는 여기 맨 아래 — 동작 버튼과 떨어뜨려 잘못 누르지 않게 -->
+    <div id="settings" class="log-panel settings-panel" hidden>
+      <div class="log-head"><span>⚙ 설정</span><button id="settings-close" class="mascot-quit" title="닫기">×</button></div>
+      <div class="settings-body">
+        <div class="set-sec"><h4>모습</h4>
+          <div class="set-row"><label for="set-scale">캐릭터 크기</label><input id="set-scale" type="range" min="60" max="140" step="10" value="100"><span id="set-scale-v" class="set-val">100%</span></div>
+          <div class="set-row"><label>자리</label><button id="set-reset" class="chip">오른쪽 아래로 되돌리기</button></div>
+        </div>
+        <div class="set-sec"><h4>소리</h4>
+          <div class="set-row"><label for="set-gain">목소리 크기</label><input id="set-gain" type="range" min="50" max="300" step="10" value="100"><span id="set-gain-v" class="set-val">100%</span></div>
+          <div class="set-row"><label for="set-sounds">효과음</label><input id="set-sounds" type="checkbox" class="set-toggle" checked><span class="set-note">띠링·또롱·진행음</span></div>
+          <div class="set-row"><label for="vlang">음성 언어</label>
+            <select id="vlang" class="chip chip-perm set-sel" title="음성 모드 언어(듣기·말하기 같이)">
+              <option value="ko">🎙 한국어</option><option value="ja">🎙 日本語</option><option value="en">🎙 English</option>
+            </select></div>
+        </div>
+        <div class="set-sec"><h4>완료 알림 <small>(앱의 모든 대화)</small></h4>
+          <div class="set-row"><label for="set-announce">목소리로 알림</label><input id="set-announce" type="checkbox" class="set-toggle" checked></div>
+          <div class="set-row"><label for="set-announce-mode">내용</label>
+            <select id="set-announce-mode" class="chip chip-perm set-sel"><option value="line">한 마디만</option><option value="summary">요약까지</option></select></div>
+          <div class="set-row"><label for="set-announce-min">기준</label>
+            <select id="set-announce-min" class="chip chip-perm set-sel">
+              <option value="0">모든 턴</option><option value="10">10초 넘게 걸린 턴만</option><option value="30">30초 넘게 걸린 턴만</option>
+              <option value="60">1분 넘게 걸린 턴만</option><option value="180">3분 넘게 걸린 턴만</option>
+            </select></div>
+        </div>
+        <div class="set-sec"><h4>Claude 사용량 <small id="usage-note"></small></h4>
+          <div id="usage-rows"><div class="set-note">불러오는 중…</div></div>
+        </div>
+        <div class="set-sec"><h4>지시</h4>
+          <div class="set-row"><label>폴더</label><button id="set-folder" class="chip chip-folder" title="지시를 실행할 폴더 선택"><span id="set-folder-v">폴더</span></button></div>
+          <div class="set-row"><label for="perm">실행 권한</label>
+            <select id="perm" class="chip chip-perm set-sel" title="지시 실행 권한">
+              <option value="acceptEdits">자동 수락</option><option value="plan">계획 모드</option><option value="bypassPermissions">권한 무시</option><option value="auto">자동</option>
+            </select></div>
+        </div>
+      </div>
+      <div class="settings-quit"><span class="set-hint">⌥⇧Space 입력칸 · Esc 되돌아가기</span><button id="quit" class="chip chip-quit" title="오버레이 종료">오버레이 끄기</button></div>
+    </div>
+
+    <div class="mascot-ctl">
+      <div class="ctl-left">
+        <button id="transform" class="mascot-transform" title="변신">✞ 변신 ✞</button>
+        <select id="costume" class="chip chip-perm ctl-costume" title="의상">
+          <option value="base">기본</option><option value="kimono">기모노</option><option value="bunny">바니</option><option value="pajama">파자마</option>
+          <option value="casual">사복</option><option value="summer">여름 원피스</option><option value="lounge">룸웨어</option><option value="knit">니트</option>
+          <option value="nurse">간호사</option><option value="swim">수영복</option><option value="saint">성자·흑미사</option>
+        </select>
+      </div>
+      <div class="ctl-right">
+        <button id="mic" class="mascot-talk mic" title="음성 모드 켜기 — '쵸텐짱'·'아메짱'이라고 부르면 대답해요">🎙</button>
+        <button id="logbtn" class="mascot-talk" title="최근 대화 기록 (20개)">📜</button>
+        <button id="settingsbtn" class="mascot-talk" title="설정">⚙</button>
+      </div>
+    </div>
+  </div>
+  <script src="touch.js"></script>
+  <script src="narrate.js"></script>
+  <script src="bubbles.js"></script>
+  <script src="boost.js"></script>
+  <script src="../chromeflow.js"></script>
+  <script src="settings.js"></script>
+  <script src="mascot.js"></script>
+</body>
+</html>

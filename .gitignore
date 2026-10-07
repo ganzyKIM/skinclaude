@@ -1,0 +1,28 @@
+# 의존성·빌드 산출물
+overlay/node_modules/
+overlay/helper/sttd
+overlay/helper/claudewin
+overlay/tts/__pycache__/
+__pycache__/
+*.pyc
+
+# 애플스크립트 앱(bin/build-applets.sh 로 bin/applets/*.applescript 에서 만든다)
+*.app/
+
+# 로컬 상태·로그·스크래치
+.DS_Store
+.claude/settings.local.json
+workspace/
+gen/upload-server.log
+*.log
+
+# 이미지 생성 파이프라인의 중간 산출물(원본 1024px·컷아웃·백업·버린 것 — 수백 MB). 최종 컷은 overlay/assets/char 에 있다
+gen/raw/
+gen/cut/
+gen/backup/
+gen/rejected/
+
+# 생성한 캐릭터 그림(원작 캐릭터의 팬 창작물 — 공개 저장소에는 올리지 않는다, 2026-10-07 사용자 결정). 이름 규칙은 overlay/assets/char/README.md
+overlay/assets/char/*.png
+overlay/assets/char/*.webp
+bin/skinclaude.icns

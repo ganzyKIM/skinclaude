@@ -1,0 +1,236 @@
+@font-face{ font-family:'Galmuri11'; src:url('../assets/fonts/Galmuri11.woff2') format('woff2'); font-weight:normal; }
+@font-face{ font-family:'Galmuri11'; src:url('../assets/fonts/Galmuri11-Bold.woff2') format('woff2'); font-weight:bold; }
+
+:root{
+  --pink-1:#ffd9f2; --pink-3:#ff9ede;
+  --magenta:#ff44c8; --magenta-d:#d619a6;
+  --lav-1:#e9d6ff; --lav-2:#cda9ff;
+  --ink:#5a2a55; --ink-soft:#9b5e90;
+  --bevel-lt:#ffffff; --bevel-dk2:#8a3f7a;
+  /* 같은 그림자를 두 방식으로 쓴다. filter:drop-shadow 의 흐림값은 표준편차라, box-shadow 로 똑같이 그리려면 흐림값을 두 배로 준다 */
+  --shadow:0 6px 10px rgba(120,30,90,.35); --shadow-box:0 6px 20px rgba(120,30,90,.35);
+}
+*{ box-sizing:border-box; }
+[hidden]{ display:none !important; }
+html,body{ margin:0; height:100%; background:transparent; overflow:hidden; font-family:'Galmuri11', sans-serif; }
+body{ -webkit-user-select:none; user-select:none; }
+
+.mascot{
+  position:fixed; right:18px; bottom:8px; z-index:200;
+  display:flex; flex-direction:column; align-items:center; gap:6px;
+  transition:opacity .25s;
+}
+/* 그림자는 .mascot 전체가 아니라 덩어리마다 건다. 전체에 걸면 '변신' 버튼이 반짝일 때마다 캐릭터·말풍선 그림자까지 매 프레임
+   다시 계산해서, 가만히 있어도 GPU 30%·렌더러 16%를 썼다(2026-10-01). 버튼 줄은 반짝임이 있어 필터 대신 box-shadow 로 같은 그림자를 준다. */
+.mascot-stack,.bar,.log-panel{ filter:drop-shadow(var(--shadow)); }
+.mascot.descending{ animation:mascotDescend .55s cubic-bezier(.22,1,.36,1) both; }
+@keyframes mascotDescend{
+  0%{opacity:0;transform:translateY(-40px) scale(.92);filter:brightness(3);}
+  60%{opacity:1;transform:translateY(4px) scale(1.01);filter:brightness(1.15);}
+  100%{opacity:1;transform:translateY(0) scale(1);filter:brightness(1);}
+}
+/* 열 폭으로 늘려 둔다: 그림자 필터가 예전(.mascot 전체)과 같은 자리에서 시작해야 말풍선·입력창이 떠 있을 때도 캐릭터가 전과 똑같이 그려진다 */
+.mascot-stack{ position:relative; display:flex; align-items:flex-end; justify-content:center; align-self:stretch; }
+/* 크기는 설정의 캐릭터 크기(--scale, mascot.js applyScale) */
+.mascot-img{ height:calc(300px * var(--scale, 1)); width:auto; display:block; cursor:grab; -webkit-user-drag:none; transition:filter .2s; }
+.mascot.dragging .mascot-img{ cursor:grabbing; }
+.mascot.thinking .mascot-img{ animation:bob 1.6s ease-in-out infinite; }
+@keyframes bob{ 50%{ transform:translateY(-5px); } }
+
+/* 버튼 줄: 왼쪽 변신, 오른쪽에 🎙·📜·⚙. 닫기(×)는 설정 패널 맨 아래로 옮겼다(동작 버튼과 같은 크기·자리라 잘못 눌렀다 — 사용자 2026-10-07) */
+.mascot-ctl{ width:320px; display:flex; gap:6px; align-items:center; justify-content:space-between; }
+/* positioned 로 두어 캐릭터 그림자 위에 그린다(예전처럼 그림자가 버튼 밑에 깔리게) */
+.mascot-ctl > button{ position:relative; box-shadow:var(--shadow-box); }
+.mascot-transform{
+  font-family:inherit; font-size:12px; color:#fff; cursor:pointer;
+  padding:3px 12px; letter-spacing:1px; font-weight:bold; white-space:nowrap;
+  text-shadow:1px 1px 0 var(--magenta-d);
+  background:linear-gradient(var(--lav-2),var(--magenta));
+  border:2px solid; border-color:var(--bevel-lt) var(--bevel-dk2) var(--bevel-dk2) var(--bevel-lt);
+}
+.mascot-transform:hover{ background:linear-gradient(var(--magenta),var(--magenta-d)); }
+.mascot-transform:active{ transform:translateY(1px); border-color:var(--bevel-dk2) var(--bevel-lt) var(--bevel-lt) var(--bevel-dk2); }
+/* 반짝임: box-shadow 를 직접 애니메이션하면 매 프레임 다시 그린다. 약한 빛(예전 0%)과 센 빛(예전 50%) 두 겹의 투명도만
+   바꾸면 합성기가 처리해서 가볍다(벤치: GPU 29→8%, 렌더러 16→4.5%). */
+.mascot-transform::before,.mascot-transform::after{ content:''; position:absolute; inset:-2px; pointer-events:none; animation:1.8s ease-in-out infinite; }
+.mascot-transform::before{ box-shadow:0 0 8px rgba(255,80,200,.5); animation-name:glowOut; }
+.mascot-transform::after{ box-shadow:0 0 14px rgba(255,80,200,.9); opacity:0; animation-name:glowIn; }
+@keyframes glowOut{ 50%{ opacity:0; } }
+@keyframes glowIn{ 50%{ opacity:1; } }
+.mascot-quit{
+  font-family:inherit; font-size:12px; font-weight:bold; color:var(--ink); cursor:pointer;
+  width:22px; height:22px; line-height:1; padding:0;
+  background:linear-gradient(var(--pink-1),var(--pink-3));
+  border:2px solid; border-color:var(--bevel-lt) var(--bevel-dk2) var(--bevel-dk2) var(--bevel-lt);
+}
+
+/* 말풍선 — txtgame .mascot-bubble 모양. 말하는 쪽(세션·잡담·지시)마다 하나씩 최대 3개를 캐릭터 위로 쌓고, 맨 아래 것만 꼬리를 단다 */
+.bubble-stack{
+  position:absolute; bottom:calc(100% + 12px); left:50%; transform:translateX(-50%);
+  translate:var(--shift, 0px) 0; /* 창 밖으로 잘리지 않게 mascot.js fitBubbles() 가 묶음을 --shift 만큼 민다 */
+  width:max-content; display:flex; flex-direction:column; align-items:center; gap:8px; z-index:10;
+}
+.bubble-item{ display:flex; flex-direction:column; align-items:center; gap:4px; transition:opacity .18s; }
+.bubble-item.leaving{ opacity:0; }
+.mascot-bubble{
+  position:relative; width:max-content; max-width:260px;
+  background:#fff; color:var(--ink);
+  border:2px solid var(--magenta); border-radius:14px;
+  padding:9px 13px; font-size:13px; line-height:1.5; text-align:left;
+  box-shadow:3px 3px 0 rgba(180,40,140,.3);
+  word-break:keep-all; overflow-wrap:break-word; white-space:pre-line;
+  display:flex; flex-direction:column; gap:6px; align-items:center; transform-origin:50% 100%;
+}
+/* 꼬리는 캐릭터를 가리키도록 묶음이 밀린 만큼(--tail) 되돌린다 */
+.bubble-item:last-child .mascot-bubble::after{ content:''; position:absolute; left:50%; bottom:-9px; transform:translateX(-50%); translate:var(--tail, 0px) 0;
+  border:8px solid transparent; border-top-color:var(--magenta); border-bottom:0; }
+.bubble-item:last-child .mascot-bubble::before{ content:''; position:absolute; left:50%; bottom:-6px; transform:translateX(-50%); translate:var(--tail, 0px) 0;
+  border:7px solid transparent; border-top-color:#fff; border-bottom:0; z-index:1; }
+.mascot-bubble.pop{ animation:bubblePop .28s cubic-bezier(.34,1.56,.64,1); }
+@keyframes bubblePop{ 0%{ transform:scale(.6) translateY(8px); opacity:0; }
+  100%{ transform:scale(1) translateY(0); opacity:1; } }
+.mascot.form-ame .mascot-bubble{ border-color:#6a2a5a; color:#3a1530; background:#f3e6f0; }
+.mascot.form-ame .bubble-item:last-child .mascot-bubble::after{ border-top-color:#6a2a5a; }
+.mascot.form-ame .bubble-item:last-child .mascot-bubble::before{ border-top-color:#f3e6f0; }
+
+/* 변신 연출 (txtgame charMorph 축약) */
+.mascot.transforming .mascot-img{ animation:charMorph 1.2s ease-in-out; }
+@keyframes charMorph{
+  0%{transform:scale(1) rotate(0); filter:brightness(1);}
+  35%{transform:scale(1.12) rotate(-3deg); filter:brightness(2.4) saturate(1.6);}
+  50%{transform:scale(.7) rotate(4deg); filter:brightness(6) blur(2px);}
+  65%{transform:scale(1.12) rotate(-2deg); filter:brightness(2.2);}
+  100%{transform:scale(1) rotate(0); filter:brightness(1);}
+}
+
+/* ── 말풍선 안 버튼 ── */
+/* 긴 글은 본문만 스크롤한다. 말풍선이 세 개까지 쌓이니 높이를 조금 낮게 */
+.mascot-bubble.long .bubble-text{ max-height:160px; overflow:auto; }
+/* 말풍선 위 세션 이름표 "세션 제목 · 폴더" — Claude Code 세션 얘기일 때만(그냥 대화는 말풍선만) */
+.bubble-tag{
+  max-width:300px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  padding:2px 9px; border-radius:9px; font-size:11px; line-height:1.5; font-weight:700;
+  color:#fff; background:var(--magenta); box-shadow:2px 2px 0 rgba(180,40,140,.3);
+}
+.bubble-tag[hidden]{ display:none; }
+.mascot.form-ame .bubble-tag{ background:#6a2a5a; box-shadow:2px 2px 0 rgba(60,20,50,.3); }
+.bubble-btn{
+  font-family:inherit; font-size:11px; font-weight:bold; color:#fff; cursor:pointer; padding:2px 10px;
+  background:linear-gradient(var(--lav-2),var(--magenta)); text-shadow:1px 1px 0 var(--magenta-d);
+  border:2px solid; border-color:var(--bevel-lt) var(--bevel-dk2) var(--bevel-dk2) var(--bevel-lt);
+}
+.bubble-btn:active{ transform:translateY(1px); }
+
+/* ── 입력 바(항상 보임): 포커스 없으면 흐리게, 포커스 오면(.typing) 또렷하고 자홍 외곽선 ── */
+.bar{
+  width:320px; display:flex; align-items:center; gap:6px; padding:4px 6px;
+  background:#ffe6f7; color:var(--ink); opacity:.72; transition:opacity .15s;
+  border:2px solid; border-color:var(--bevel-lt) var(--bevel-dk2) var(--bevel-dk2) var(--bevel-lt);
+  box-shadow:3px 3px 0 rgba(180,40,140,.3);
+}
+.mascot.typing .bar, .bar:hover{ opacity:1; }
+.mascot.typing .bar{ box-shadow:0 0 0 2px var(--magenta), 3px 3px 0 rgba(180,40,140,.3); }
+.form-ame .bar{ background:#241428; color:#ecd8f8; border-color:#4a2a55 #08030c #08030c #4a2a55; }
+.bar textarea{
+  flex:1; min-width:0; font-family:inherit; font-size:13px; line-height:1.4; resize:none; padding:4px 6px; max-height:62px;
+  color:var(--ink); background:#fff; border:2px solid; border-color:var(--bevel-dk2) var(--bevel-lt) var(--bevel-lt) var(--bevel-dk2); outline:none;
+}
+.form-ame .bar textarea{ background:#160d1e; color:#ecd8f8; border-color:#08030c #4a2a55 #4a2a55 #08030c; }
+.bar.busy textarea{ opacity:.6; }
+.bar .chip{ padding:2px 6px; }
+.bar .go{ width:26px; height:22px; flex:0 0 auto; }
+.bar .go.cancel{ background:linear-gradient(#ffb3b3,#ff6a6a); color:#fff; }
+.bar-foot{ width:320px; display:flex; justify-content:flex-start; margin-top:-2px; }
+.bar-folder{ font-family:inherit; font-size:11px; color:var(--ink-soft); background:none; border:0; padding:0 4px; cursor:pointer; max-width:100%; }
+.bar-folder span{ display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; direction:rtl; }
+.form-ame .bar-folder{ color:#c0a0d8; }
+.chip{
+  font-family:inherit; font-size:11px; font-weight:bold; cursor:pointer; padding:2px 8px; color:var(--ink); white-space:nowrap;
+  background:linear-gradient(var(--pink-1),var(--pink-3));
+  border:2px solid; border-color:var(--bevel-lt) var(--bevel-dk2) var(--bevel-dk2) var(--bevel-lt);
+}
+.chip:active{ transform:translateY(1px); }
+.chip-mode.task{ background:linear-gradient(#ffe9a8,#ffc94d); }
+.chip-folder{ flex:1; min-width:0; text-align:left; }
+.chip-folder span{ display:block; overflow:hidden; text-overflow:ellipsis; direction:rtl; }
+.chip-perm{ appearance:none; -webkit-appearance:none; padding-right:8px; }
+.ctl-left,.ctl-right{ display:flex; gap:6px; align-items:center; }
+.ctl-left > *,.ctl-right > button{ position:relative; box-shadow:var(--shadow-box); }
+/* 변신 옆 의상 선택(사용자 2026-10-07): 버튼 줄 높이에 맞춘 작은 select */
+.ctl-costume{ height:22px; padding:0 6px; max-width:96px; overflow:hidden; text-overflow:ellipsis; }
+.mascot-talk{
+  font-family:inherit; font-size:12px; cursor:pointer; width:26px; height:22px; line-height:1; padding:0;
+  background:linear-gradient(var(--lav-1),var(--lav-2));
+  border:2px solid; border-color:var(--bevel-lt) var(--bevel-dk2) var(--bevel-dk2) var(--bevel-lt);
+}
+
+/* ── 최근 대화 기록(📜): 캐릭터 왼쪽(자리가 없으면 오른쪽)에 뜨는 목록, 최근 20개 ── */
+.log-panel{
+  position:absolute; right:calc(100% + 10px); bottom:34px; width:300px; max-height:min(420px, calc(100vh - 60px));
+  display:flex; flex-direction:column; background:#ffe6f7; color:var(--ink); z-index:20;
+  border:2px solid; border-color:var(--bevel-lt) var(--bevel-dk2) var(--bevel-dk2) var(--bevel-lt);
+  box-shadow:3px 3px 0 rgba(180,40,140,.3);
+}
+.log-panel.flip{ right:auto; left:calc(100% + 10px); }
+.log-head{ display:flex; justify-content:space-between; align-items:center; padding:5px 6px 5px 10px; font-size:12px; font-weight:bold; }
+.log-list{ list-style:none; margin:0; padding:0 8px 8px; overflow:auto; display:flex; flex-direction:column; gap:6px; }
+.log-item{
+  align-self:flex-start; max-width:100%; background:#fff; border:2px solid var(--magenta); border-radius:10px; padding:5px 9px;
+  font-size:12px; line-height:1.45; white-space:pre-line; word-break:keep-all; overflow-wrap:break-word;
+}
+.log-item.me{ align-self:flex-end; background:var(--lav-1); border-color:var(--lav-2); }
+.log-meta{ font-size:10px; color:var(--ink-soft); margin-bottom:2px; }
+.log-text{ -webkit-user-select:text; user-select:text; }
+.log-empty{ font-size:12px; color:var(--ink-soft); padding:4px 2px; }
+.form-ame .log-panel{ background:#241428; color:#ecd8f8; border-color:#4a2a55 #08030c #08030c #4a2a55; }
+.form-ame .log-item{ background:#f3e6f0; color:#3a1530; border-color:#6a2a5a; }
+.form-ame .log-item.me{ background:#d9c6e6; border-color:#8a5a9a; }
+.form-ame .log-meta{ color:#8a5a7a; }
+
+/* ── 설정 패널(⚙): 기록 창과 같은 자리·모양. 오버레이 끄기는 맨 아래 빨간 글자 버튼 ── */
+.settings-panel{ font-size:12px; max-height:min(560px, calc(100vh - 60px)); }
+.settings-body{ overflow:auto; padding:0 0 4px; }
+.set-sec{ padding:4px 10px 6px; border-top:1px solid #f3bfe3; }
+.set-sec h4{ margin:0 0 4px; font-size:11px; color:var(--ink-soft); font-weight:normal; letter-spacing:.5px; }
+.set-sec h4 small{ font-size:10px; }
+.set-row{ display:flex; align-items:center; gap:8px; margin:3px 0; }
+.set-row label{ flex:0 0 78px; }
+.set-val{ flex:0 0 44px; text-align:right; color:var(--ink-soft); font-size:11px; }
+.set-note{ flex:1; color:var(--ink-soft); font-size:11px; }
+.set-sel{ flex:1; min-width:0; text-align:left; }
+.set-row .chip-folder{ flex:1; }
+.set-row input[type=range]{ flex:1; min-width:0; accent-color:var(--magenta); height:14px; margin:0; }
+.set-toggle{ appearance:none; -webkit-appearance:none; width:30px; height:16px; border-radius:9px; background:#d9c0d4; position:relative; margin:0; cursor:pointer; flex:0 0 auto; }
+.set-toggle::after{ content:''; position:absolute; top:2px; left:2px; width:12px; height:12px; border-radius:50%; background:#fff; transition:left .12s; }
+.set-toggle:checked{ background:var(--magenta); }
+.set-toggle:checked::after{ left:16px; }
+/* Claude 사용량(5시간·주간): 한도의 사용률 막대. 90% 넘으면 빨갛게 */
+.usage-row{ display:flex; align-items:center; gap:8px; margin:3px 0; }
+.usage-row label{ flex:0 0 78px; }
+.usage-bar{ flex:1; height:10px; background:#fff; border:1px solid var(--magenta); overflow:hidden; }
+.usage-bar > i{ display:block; height:100%; background:linear-gradient(var(--lav-2),var(--magenta)); }
+.usage-bar.hot > i{ background:linear-gradient(#ffb3b3,#ff6a6a); }
+.usage-pct{ flex:0 0 36px; text-align:right; font-size:11px; }
+.usage-reset{ font-size:10px; color:var(--ink-soft); padding-left:86px; margin-top:-2px; }
+.form-ame .usage-bar{ background:#160d1e; border-color:#8a5a9a; }
+.form-ame .usage-reset{ color:#c0a0d8; }
+.settings-quit{ border-top:2px solid #f3bfe3; padding:8px 10px; display:flex; justify-content:space-between; align-items:center; }
+.set-hint{ font-size:10px; color:var(--ink-soft); }
+.chip-quit{ color:#fff; background:linear-gradient(#ffb3b3,#ff6a6a); text-shadow:1px 1px 0 #a02020; border-color:var(--bevel-lt) #a02020 #a02020 var(--bevel-lt); padding:3px 10px; }
+.form-ame .set-sec{ border-top-color:#4a2a55; }
+.form-ame .settings-quit{ border-top-color:#4a2a55; }
+.form-ame .set-sec h4, .form-ame .set-val, .form-ame .set-note, .form-ame .set-hint{ color:#c0a0d8; }
+.form-ame .set-toggle:not(:checked){ background:#4a2a55; } /* 켜진 토글의 자홍은 아메 테마에서도 그대로 */
+
+/* ── 음성 모드 🎙: 켜져 있으면 분홍, 이름 없이 이어 들을 때(대답 직후)는 깜빡, 말하는 중엔 보라 ── */
+.mascot-talk.mic.on{ background:linear-gradient(#ffd6f0,#ff6ad5); box-shadow:0 0 8px rgba(255,80,200,.7),var(--shadow-box); }
+.mascot-talk.mic.awake{ animation:micPulse 1s ease-in-out infinite; }
+.mascot-talk.mic.speaking{ background:linear-gradient(var(--lav-1),#b27cff); }
+.mascot-talk.mic.error{ background:linear-gradient(#ffd0d0,#ff7a7a); }
+@keyframes micPulse{ 50%{ box-shadow:0 0 14px rgba(255,80,200,1),var(--shadow-box); transform:scale(1.08); } }
+
+/* 일본어 말풍선: 띄어쓰기가 없어 keep-all 이면 한 문장이 한 단어가 돼 말풍선 밖으로 삐져나왔다(2026-10-01).
+   일본어는 글자 사이에서 줄을 바꾸되 줄머리 금칙(、。 등)은 지키고, 플렉스 안에서 글 폭이 문장 길이로 커지지 않게 min-width:0 */
+.bubble-text{ min-width:0; max-width:100%; }
+.bubble-text:lang(ja), .log-text:lang(ja){ word-break:normal; line-break:strict; }
+

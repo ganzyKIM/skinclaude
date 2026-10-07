@@ -1,0 +1,61 @@
+{
+  "chroma": { "choten": "pure saturated blue #0000FF", "ame": "pure saturated green #00FF00" },
+  "refs": { "choten": ["choten_default.png", "choten_peace.png"], "ame": ["ame_default.png", "ame_dere.png"] },
+  "lock": {
+    "choten": [
+      "extremely long twintails with a pastel PINK and MINT GREEN gradient",
+      "long ribbon-like hair strands curling and flowing all around her body",
+      "cream / white blonde hair at the crown, a pastel bow and a star hairpin",
+      "large bright light-blue eyes",
+      "small heart and star marks on her right thigh",
+      "thick platform pastel blue mary jane shoes with ankle straps",
+      "overall high-key pastel palette (pink, mint, lavender, cream)"
+    ],
+    "ame": [
+      "near-black dark twintails, shorter and spikier than Choten, with a small red ribbon",
+      "an X-shaped hairpin, front bangs partly covering one eye",
+      "muted mauve / dusty purple eyes",
+      "a black choker with a red heart charm",
+      "dark charcoal knee-high socks",
+      "overall dark low-key palette (black, crimson, charcoal)"
+    ]
+  },
+  "variants": {
+    "choten": {
+      "joy":       "Expression and pose: beaming open-mouth smile, eyes squeezed happily, both arms thrown up in a cheer.",
+      "shy":       "Expression and pose: blushing hard, eyes looking away, both hands pressed to her cheeks, feet turned inward.",
+      "pout":      "Expression and pose: sulking pout with puffed cheeks, eyebrows knitted, arms crossed, looking sideways.",
+      "worried":   "Expression and pose: anxious, worried eyebrows, hands clasped together in front of her chest, leaning slightly forward.",
+      "jealous":   "Expression and pose: jealous, narrowed eyes and a small 'hmph' pout, one hand on hip, the other pointing at the viewer.",
+      "sleepy":    "Expression and pose: sleepy, half-closed eyes, yawning with one hand covering her mouth, the other rubbing an eye.",
+      "surprised": "Expression and pose: startled, wide eyes and a small open mouth, both hands raised beside her face, shoulders up.",
+      "smug":      "Expression and pose: confident smug grin, one eyebrow raised, finger pointing up as if making a point, chest out.",
+      "sad":       "Expression and pose: teary eyes about to cry, wobbling mouth, hands holding the hem of her skirt, shoulders drooping.",
+      "laugh":     "Expression and pose: laughing out loud with eyes closed, one hand on her stomach, the other waving.",
+      "love":      "Expression and pose: lovestruck, sparkling eyes with tiny heart highlights, making a heart shape with both hands in front of her chest, glowing blush.",
+      "thinking":  "Expression and pose: thinking, looking up to the side, index finger on her chin, other hand on hip.",
+      "wave":      "Expression and pose: friendly greeting, big smile, one arm raised high waving hello.",
+      "cheer":     "Expression and pose: cheering the viewer on, fists clenched at chest level, determined sparkling eyes, big encouraging smile.",
+      "pajama":    "Outfit change: pastel pink pajamas with a star pattern, holding a small plush pillow, sleepy soft smile, hair slightly loose but still twintails.",
+      "casual":    "Outfit change: oversized pastel lavender hoodie and a mint pleated skirt, relaxed pose with hands in the hoodie pockets, gentle smile."
+    },
+    "ame": {
+      "joy":       "Expression and pose: a rare small genuine smile, eyes slightly softened, one hand loosely raised near her chest.",
+      "shy":       "Expression and pose: blushing, turning her face away with an annoyed frown, tugging at her own twintail.",
+      "pout":      "Expression and pose: sulking, arms crossed tightly, looking sharply away, cheeks faintly puffed.",
+      "worried":   "Expression and pose: worried, brows drawn together, biting her lip, one hand gripping her other arm.",
+      "jealous":   "Expression and pose: jealous glare, eyes narrowed with a faint blush, arms crossed, chin slightly lowered.",
+      "sleepy":    "Expression and pose: sleepy, heavy half-closed eyes, slouching, rubbing one eye with the back of her hand.",
+      "surprised": "Expression and pose: caught off guard, eyes wide, mouth slightly open, one step back with hands half-raised.",
+      "smug":      "Expression and pose: smug, small mocking smirk, one hand on hip, looking down at the viewer.",
+      "sad":       "Expression and pose: quietly sad, eyes downcast and glistening, hands hanging loosely, shoulders low.",
+      "laugh":     "Expression and pose: a soft laugh escaping, hand covering her mouth, eyes closed, shoulders slightly shaking.",
+      "love":      "Expression and pose: caught being sincere, strong blush, looking straight at the viewer with vulnerable eyes, both hands clutching the hem of her skirt.",
+      "thinking":  "Expression and pose: thinking, eyes closed, arms crossed, head tilted slightly.",
+      "wave":      "Expression and pose: a reluctant small wave with one hand at shoulder height, neutral face with the faintest blush.",
+      "cheer":     "Expression and pose: quietly encouraging, small fist raised at chest level, looking away but with a faint smile.",
+      "pajama":    "Outfit change: black oversized long-sleeve pajama shirt with a tiny red heart print, hugging a dark pillow, sleepy annoyed face, twintails down loose.",
+      "casual":    "Outfit change: black hoodie with a crimson inner lining and a charcoal pleated skirt, hands in the hoodie pockets, indifferent expression."
+    }
+  }
+}

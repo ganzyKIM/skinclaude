@@ -1,0 +1,16 @@
+{
+  "name": "skinclaude-overlay",
+  "version": "0.0.1",
+  "private": true,
+  "description": "초텐쨩·아메 플로팅 마스코트 오버레이 — Claude 데스크톱 앱 위에 떠서 Stop 훅 응답을 말풍선으로 보여준다 (스파이크)",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "node --test \"test/*.test.js\"",
+    "build:helper": "swiftc -O helper/claudewin.swift -o helper/claudewin",
+    "build:sttd": "swiftc -O helper/sttd.swift -o helper/sttd"
+  },
+  "devDependencies": {
+    "electron": "^44.4.5"
+  }
+}

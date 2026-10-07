@@ -1,0 +1,23 @@
+Draw the same character again (same as the references at the start of this chat and your previous images).
+MUST KEEP IDENTICAL:
+- extremely long twintails with a pastel PINK and MINT GREEN gradient
+- long ribbon-like hair strands curling and flowing all around her body
+- cream / white blonde hair at the crown, a pastel bow and a star hairpin
+- large bright light-blue eyes
+- small heart and star marks on her right thigh
+- thick platform pastel blue mary jane shoes with ankle straps
+- overall high-key pastel palette (pink, mint, lavender, cream)
+- pixel-art style with dithered shading and crisp clean outlines
+
+RENDERING RULES:
+- Do NOT draw a white sticker outline or any white border around the character. Apply a soft drop shadow to the whole silhouette instead. No shadow on the ground.
+- Background: completely flat pure saturated blue #0000FF filling the entire frame. No gradient, no texture, no scenery. It will be chroma-keyed out later.
+
+COMPOSITION:
+- A single character only, full body, standing, facing the viewer. Tall portrait, about 400 wide by 658 tall.
+- Her hair ornaments must end well below the top edge and her shoes must end well above the bottom edge. Nothing may touch or cross any edge of the image.
+
+CHANGE ONLY THIS:
+- Expression and pose: sleepy, half-closed eyes, yawning with one hand covering her mouth, the other rubbing an eye.
+
+Everything else stays exactly as in the references. Leave the hands empty of props unless the change says otherwise. No text, no watermark.
