@@ -43,7 +43,7 @@ body{ -webkit-user-select:none; user-select:none; }
 .mascot-ctl > button{ position:relative; box-shadow:var(--shadow-box); }
 .mascot-transform{
   font-family:inherit; font-size:12px; color:#fff; cursor:pointer;
-  padding:3px 12px; letter-spacing:1px; font-weight:bold; white-space:nowrap;
+  padding:0 12px; letter-spacing:1px; font-weight:bold; white-space:nowrap;
   text-shadow:1px 1px 0 var(--magenta-d);
   background:linear-gradient(var(--lav-2),var(--magenta));
   border:2px solid; border-color:var(--bevel-lt) var(--bevel-dk2) var(--bevel-dk2) var(--bevel-lt);
@@ -155,9 +155,10 @@ body{ -webkit-user-select:none; user-select:none; }
 .chip-folder span{ display:block; overflow:hidden; text-overflow:ellipsis; direction:rtl; }
 .chip-perm{ appearance:none; -webkit-appearance:none; padding-right:8px; }
 .ctl-left,.ctl-right{ display:flex; gap:6px; align-items:center; }
-.ctl-left > *,.ctl-right > button{ position:relative; box-shadow:var(--shadow-box); }
+/* 버튼 줄의 높이는 모두 24px(사용자 2026-10-08 "버튼들 높이 좀 맞춰라" — 변신만 26px 로 컸다) */
+.ctl-left > *,.ctl-right > button{ position:relative; box-shadow:var(--shadow-box); height:24px; line-height:20px; box-sizing:border-box; }
 /* 변신 옆 의상 선택(사용자 2026-10-07): 버튼 줄 높이에 맞춘 작은 select */
-.ctl-costume{ height:22px; padding:0 6px; max-width:96px; overflow:hidden; text-overflow:ellipsis; }
+.ctl-costume{ padding:0 6px; max-width:96px; overflow:hidden; text-overflow:ellipsis; }
 .mascot-talk{
   font-family:inherit; font-size:12px; cursor:pointer; width:26px; height:22px; line-height:1; padding:0;
   background:linear-gradient(var(--lav-1),var(--lav-2));
